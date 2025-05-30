@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Falcon DSA WASM Benchmarks</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .stat {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .stat h4 {
+            margin: 0 0 5px 0;
+            color: #666;
+        }
+        .stat p {
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .loading {
+            display: none;
+            margin: 20px 0;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Falcon DSA WASM Benchmarks</h1>
+    <button id="runBenchmarks">Run Benchmarks</button>
+    <div id="loading" class="loading">Running benchmarks (25 iterations)...</div>
+    <div id="results"></div>
+
+    <script type="module">
+        import { run_all_benchmarks } from './dist/index.js';
+
+        function formatTime(ms) {
+            return ms.toFixed(2) + ' ms';
+        }
+
+        function createStatsDisplay(title, stats) {
+            return `
+                <div class="result">
+                    <h3>${title}</h3>
+                    <div class="stats">
+                        <div class="stat">
+                            <h4>Average</h4>
+                            <p>${formatTime(stats.avg)}</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Minimum</h4>
+                            <p>${formatTime(stats.min)}</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Maximum</h4>
+                            <p>${formatTime(stats.max)}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function run() {
+            const button = document.getElementById('runBenchmarks');
+            const loading = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+            
+            button.disabled = true;
+            loading.style.display = 'block';
+            resultsDiv.innerHTML = '';
+            
+            try {
+                const results = run_all_benchmarks();
+                console.log('Raw results:', results);
+                
+                resultsDiv.innerHTML = `
+                    ${createStatsDisplay('Secret Key Generation (thread_rng)', results.thread_rng)}
+                    ${createStatsDisplay('Secret Key Generation (os_rng)', results.os_rng)}
+                    ${createStatsDisplay('Secret Key Generation (felt_rng)', results.felt_rng)}
+                `;
+            } catch (error) {
+                console.error('Benchmark error:', error);
+                resultsDiv.innerHTML = `<div class="result" style="color: red;">Error running benchmarks: ${error.message}</div>`;
+            } finally {
+                button.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        document.getElementById('runBenchmarks').addEventListener('click', run);
+    </script>
+</body>
+</html> 

@@ -13,3 +13,7 @@ cmake-build-*
 
 # Proptest
 tests.txt
+
+# Wasm files
+node_modules/
+dist/

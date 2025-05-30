@@ -1,11 +1,7 @@
 [workspace]
-members = [
-    "miden-crypto"
-]
-exclude = [
-    "miden-crypto-fuzz"
-]
-resolver = "3"  # Use the edition 2024 dependency resolver
+members = ["miden-crypto", "miden-crypto-wasm-bench"]
+exclude = ["miden-crypto-fuzz"]
+resolver = "3"                                        # Use the edition 2024 dependency resolver
 
 [workspace.package]
 authors = ["miden contributors"]
@@ -15,4 +11,3 @@ categories = ["cryptography", "no-std"]
 keywords = ["miden", "crypto", "hash", "merkle"]
 edition = "2024"
 rust-version = "1.85"
-

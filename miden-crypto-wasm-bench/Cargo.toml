@@ -1,0 +1,22 @@
+[package]
+name = "miden-crypto-wasm-bench"
+version = "0.1.0"
+edition = "2024"
+authors = ["miden contributors"]
+license = "MIT"
+
+[dependencies]
+miden-crypto = { path = "../miden-crypto" }
+rand = { version = "0.9" }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = ["console"] }
+getrandom = { version = "0.3", features = ["wasm_js"] }
+rand_chacha = "0.3"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
